@@ -1,4 +1,4 @@
-cp .env.example .env
+scp .env.example .env
 
 composer install
 
