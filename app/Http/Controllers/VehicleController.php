@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class VehicleController extends Controller
 {
@@ -33,8 +35,14 @@ class VehicleController extends Controller
         $input['created_at'] = now();
 
         //dd($input);
-
-        Vehicle::insert($input);
+        DB::beginTransaction();
+        try{
+            Vehicle::insert($input);
+            DB::commit();
+        }catch (\Exception $ex){
+            //dd ($ex);
+            DB::rollBack();
+        }
 
         //get ID from the new inserted data
         //$vehicleId = Vehicle::insertGetId($input);
@@ -42,8 +50,10 @@ class VehicleController extends Controller
         return redirect(route('vehicle.index'))-> withSuccess('Vehicle Data Successfully Created!');
     }
 
-    public function edit($id)
+    public function edit($encryptId)
     {
+        //dd($id, Crypt::decrypt($id));
+        $id = Crypt::decrypt($encryptId);
         $edit = true;
         $vehicle = Vehicle::where('id', $id)->first();
         //dd($vehicle);
