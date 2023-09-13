@@ -33,13 +33,40 @@
             <div class="form-group">
                 <label for="year">Year:</label>
                 <input type="text" class="form-control" id="year" name="year" placeholder="Enter Year" value="@if($edit){{ $vehicle->year }} @endif">
+                @if($edit)
+                <input type="hidden" id="vehicleId" value="{{ Crypt::encrypt($vehicle->id) }}">
+                @endif
             </div>
             <br>
             <button type="submit" class="btn btn-primary">Submit</button>
+
         </form>
+        <button class="btn btn-warning" id="ajaxDelete">AJAX Delete</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script>
+    $("#ajaxDelete").on("click", function (e){
+        var vehicleId = $("#vehicleId").val();
+        //alert(vehicleId);
+
+        $.ajax({
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'get',
+            url: "/vehicle/delete/ajax/" +vehicleId ,
+            success: function(data){
+                alert("SUCCESS DELETE");
+                window.location.href="/vehicle";
+            },
+            error: function() {
+
+            }
+        });
+    });
+</script>
 @endsection

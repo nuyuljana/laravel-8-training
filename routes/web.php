@@ -27,3 +27,4 @@ Route::get('/vehicle/edit/{id}', [App\Http\Controllers\VehicleController::class,
 Route::post('/vehicle/update/{id}', [App\Http\Controllers\VehicleController::class, 'update'])->name('vehicle.update');
 Route::get('/vehicle/delete/{id}', [App\Http\Controllers\VehicleController::class, 'delete'])->name('vehicle.delete');
 Route::get('/vehicle/delete/soft/{id}', [App\Http\Controllers\VehicleController::class, 'softDelete'])->name('vehicle.delete.soft');
+Route::get('/vehicle/delete/ajax/{id}', [App\Http\Controllers\VehicleController::class, 'ajaxDelete'])->name('vehicle.delete.ajax');

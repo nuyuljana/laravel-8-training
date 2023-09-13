@@ -76,15 +76,17 @@ class VehicleController extends Controller
         return redirect(route('vehicle.index'))-> withSuccess('Vehicle Data Successfully Updated!');
     }
 
-    public function delete($id)
+    public function delete($encryptId)
     {
+        $id = Crypt::decrypt($encryptId);
         Vehicle::where('id', $id)->delete();
 
         return redirect(route('vehicle.index'))-> withSuccess('Vehicle Data Successfully Deleted!');
     }
 
-    public function softDelete($id)
+    public function softDelete($encryptId)
     {
+        $id = Crypt::decrypt($encryptId);
         $input = [];
         $input['status'] = 0;
         $input['deleted_at'] = now();
@@ -92,6 +94,26 @@ class VehicleController extends Controller
         Vehicle::where('id', $id)->update($input);
 
         return redirect(route('vehicle.index'))-> withSuccess('Vehicle Data Successfully Deleted!');
+    }
+
+    public function ajaxDelete($encryptId)
+    {
+
+        $id = Crypt::decrypt($encryptId);
+        $input = [];
+        $input['status'] = 0;
+        $input['deleted_at'] = now();
+
+        DB::beginTransaction();
+        try{
+            Vehicle::where('id', $id)->update($input);
+            DB::commit();
+        }catch (\Exception $ex){
+            //dd ($ex);
+            DB::rollBack();
+        }
+
+        return response()-> json("SUCCESS");
     }
 
 }
